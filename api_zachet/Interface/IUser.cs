@@ -23,6 +23,6 @@ namespace api_zachet.Interface
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<string> DeletePerson(long id);
+        public List<string> DeletePerson(int id);
     }
 }

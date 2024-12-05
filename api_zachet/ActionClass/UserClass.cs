@@ -2,6 +2,8 @@
 using api_zachet.ActionClass.HelperClass.DTO;
 using api_zachet.Interface;
 using api_zachet.Models;
+using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace api_zachet.ActionClass
 {
@@ -15,15 +17,53 @@ namespace api_zachet.ActionClass
             throw new NotImplementedException();
         }
 
-        public List<string> DeletePerson(long id)
+        public List<string> DeletePerson(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var person = _context.Persons.Find(id);
+                if (person == null) 
+                {
+                    Results.NotFound(new List<string> { "Пользователь не найден" });
+                }
+
+                var personSigns = _context.Signs.Where(ks => ks.PersonId == id).ToList();
+
+                if (personSigns.Any())
+                {
+                    _context.RemoveRange(personSigns);
+                    _context.SaveChanges();
+                }
+                _context.Persons.Remove(person);
+                _context.SaveChanges();
+
+                Results.NoContent();
+                return new List<string> { "Пользователь успешно удален" };
+
+            }
+            catch
+            {
+                Results.BadRequest(new List<string> { "Ошибка в выполнении запроса" });
+                throw;
+            }
         }
 
-        public List<PersonDTO> GetPerson(string name)
-        {
-            throw new NotImplementedException();
-        }
+        //public List<PersonDTO> GetPerson(string name)
+        //{
+        //    try
+        //    {
+        //        var person = _context.Persons.Find(name);
+        //        if (_context.Persons.Contains(name))
+        //        {
+        //            Results.NotFound(new List<string> { "Пользователь не найден" });
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        Results.BadRequest(new List<string> { "Ошибка в выполнении запроса" });
+        //        throw;
+        //    }
+        //}
 
         public List<PersonDTO> GetPersons()
         {
@@ -45,6 +85,11 @@ namespace api_zachet.ActionClass
         }
 
         public List<PersonDTO> UpdatePersons(string name, PersonDTO person)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<PersonDTO> GetPerson(string name)
         {
             throw new NotImplementedException();
         }
