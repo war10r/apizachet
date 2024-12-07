@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace api_zachet.Models;
 
 public partial class Person
 {
+    [Key]
     public int PersonId { get; set; }
 
     public string Name { get; set; } = null!;

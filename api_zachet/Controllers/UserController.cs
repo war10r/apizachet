@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using api_zachet.Interface;
 using api_zachet.ActionClass.HelperClass.DTO;
+using api_zachet.ActionClass.Account;
 
 namespace api_zachet.Controllers
 {
@@ -27,5 +28,10 @@ namespace api_zachet.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<PersonDTO>>> Get(string name) => await Task.FromResult(_IUser.GetPerson(name));
+
+        [HttpPost("Persons/addAccount")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<List<string>>> Post(AccountCreate userData) => await Task.FromResult(_IUser.AddAccount(userData));
     }
 }

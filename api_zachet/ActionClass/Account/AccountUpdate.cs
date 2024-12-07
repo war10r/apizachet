@@ -2,15 +2,13 @@
 
 namespace api_zachet.ActionClass.Account
 {
-    public class AccountCreate
+    public class AccountUpdate
     {
         [Required]
         public string Name { get; set; }
         [Required]
         public string Surname { get; set; }
         [Required]
-        public string Phone {  get; set; }
-        public string Email { get; set; }
-
+        public string Phone { get; set; }
     }
 }

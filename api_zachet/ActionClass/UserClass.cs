@@ -1,4 +1,5 @@
 ﻿using api_zachet.ActionClass.Account;
+
 using api_zachet.ActionClass.HelperClass.DTO;
 using api_zachet.Interface;
 using api_zachet.Models;
@@ -12,10 +13,39 @@ namespace api_zachet.ActionClass
         private readonly EremeevZachetContext _context;
         public UserClass(EremeevZachetContext context) => _context = context;
 
-        public bool AddAccount(AccountCreate account)
+        public List<string> AddAccount(AccountCreate account)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                if (string.IsNullOrWhiteSpace(account.Phone))
+                    return new List<string> { "Поле с номером телефона не заполнено" };
+
+                if (account.Phone.Length < 11)
+                    return new List<string> { "Номер телефона не может быть меньше или больше 11 символов" };
+
+                Person createUser = new Person()
+                {
+                    
+                    Name = account.Name, 
+                    Surname = account.Surname, 
+                    PhoneNumber = account.Phone, 
+                    Email = account.Email
+                };
+
+                _context.Add(createUser);
+                _context.SaveChanges();
+
+                int personId = createUser.PersonId;
+
+                Results.Created();
+                return [$"Пользователь успешно создан Id - {personId}"];
+            }
+            catch(Exception)
+            {
+                Results.BadRequest(new List<string> { "Ошибка в выполнении запроса"});
+                throw;
+            }
+        } 
 
         public List<string> DeletePerson(int id)
         {
@@ -48,23 +78,6 @@ namespace api_zachet.ActionClass
             }
         }
 
-        //public List<PersonDTO> GetPerson(string name)
-        //{
-        //    try
-        //    {
-        //        var person = _context.Persons.Find(name);
-        //        if (_context.Persons.Contains(name))
-        //        {
-        //            Results.NotFound(new List<string> { "Пользователь не найден" });
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        Results.BadRequest(new List<string> { "Ошибка в выполнении запроса" });
-        //        throw;
-        //    }
-        //}
-
         public List<PersonDTO> GetPersons()
         {
             try
@@ -91,7 +104,24 @@ namespace api_zachet.ActionClass
 
         public List<PersonDTO> GetPerson(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var data = _context.Persons.Where(u => u.Name == name).Select(x => new PersonDTO
+                {
+                    Name = x.Name,
+                    Email = x.Email,
+                    Id = x.PersonId,
+                    Phone = x.PhoneNumber,
+                    Surname = x.Surname,
+                }
+                ).ToList();
+                return (List<PersonDTO>)data;
+            }
+            catch
+            {
+                Results.BadRequest();
+                throw;
+            }
         }
     }
 }

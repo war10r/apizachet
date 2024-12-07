@@ -10,7 +10,7 @@ namespace api_zachet.Interface
 
         public List<PersonDTO> GetPerson(string name);
 
-        public bool AddAccount(AccountCreate account);
+        public List<string> AddAccount(AccountCreate account);
 
         /// <summary>
         /// </summary>
